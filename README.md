@@ -1,17 +1,22 @@
-# 🪂 VLAYER AUTO TX — by Moaru
+# 🪂 VLAYER AUTO TX — by Airdrop Legion
+
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-%F0%9F%92%9C-blueviolet?style=flat-square)](https://t.me/airdropalc)
+[![Bash Script](https://img.shields.io/badge/Script-Bash-brightgreen?style=flat-square&logo=gnu-bash)](https://github.com/moarunocounter/VLAYER)
+[![GitHub Repo stars](https://img.shields.io/github/stars/moarunocounter/VLAYER?style=social)](https://github.com/moarunocounter/VLAYER/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/moarunocounter/VLAYER?style=flat-square)](https://github.com/moarunocounter/VLAYER/commits/main)
+[![Telegram](https://img.shields.io/badge/Join%20Telegram-%40airdropalc-blue?style=flat-square&logo=telegram)](https://t.me/airdropalc)
 
 Script otomatis untuk instalasi dan auto TX via VLAYER di jaringan testnet.  
 Berguna untuk automasi proofing di proyek ZK & airdrop hunter lainnya.
 
 ---
 
-## 🚀 Quick Install (One-liner)
+## 🚀 Quick Install (One-click)
 
 Jalankan langsung tanpa clone repo:
 
-Versi curl :
+```bash
 bash <(curl -s https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
-Versi wget :
+
 bash <(wget -qO- https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
 
-Jangan lupa join @airdropalc ditelegram ya...

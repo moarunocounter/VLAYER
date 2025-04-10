@@ -16,7 +16,3 @@ Jalankan langsung tanpa clone repo:
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
-
-```bash
-bash <(wget -qO- https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
-

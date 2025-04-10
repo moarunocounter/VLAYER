@@ -1,6 +1,5 @@
 # 🪂 VLAYER AUTO TX — by Airdrop Legion
 
-[![Made with ❤️](https://img.shields.io/badge/Made%20with-%F0%9F%92%9C-blueviolet?style=flat-square)](https://t.me/airdropalc)
 [![Bash Script](https://img.shields.io/badge/Script-Bash-brightgreen?style=flat-square&logo=gnu-bash)](https://github.com/moarunocounter/VLAYER)
 [![GitHub Repo stars](https://img.shields.io/github/stars/moarunocounter/VLAYER?style=social)](https://github.com/moarunocounter/VLAYER/stargazers)
 [![GitHub last commit](https://img.shields.io/github/last-commit/moarunocounter/VLAYER?style=flat-square)](https://github.com/moarunocounter/VLAYER/commits/main)
@@ -18,5 +17,6 @@ Jalankan langsung tanpa clone repo:
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
 
+```bash
 bash <(wget -qO- https://raw.githubusercontent.com/moarunocounter/VLAYER/main/vlayer.sh)
 

@@ -1,4 +1,4 @@
-# 🪂 VLAYER AUTO TX — by Airdrop Legion
+# 🪂 VLAYER AUTO TX — by Moaru
 
 [![Bash Script](https://img.shields.io/badge/Script-Bash-brightgreen?style=flat-square&logo=gnu-bash)](https://github.com/moarunocounter/VLAYER)
 [![GitHub Repo stars](https://img.shields.io/github/stars/moarunocounter/VLAYER?style=social)](https://github.com/moarunocounter/VLAYER/stargazers)

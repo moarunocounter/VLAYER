@@ -1,63 +1,141 @@
 #!/bin/bash
 
-# =======================================================
-#                     AIRDROP LEGION
-# =======================================================
-#  Telegram : @airdropalc
-# =======================================================
+set -e
 
-# Pastikan script bisa digunakan oleh semua user tanpa perlu root secara langsung
-if [ "$EUID" -ne 0 ]; then
-    echo "Beberapa perintah memerlukan akses root. Meminta sudo..."
-    exec sudo bash "$0"
-    exit 1
-fi
+# ===== 🪂 Banner =====
+clear
+echo "=============================================="
+echo "🪂           AIRDROP LEGION                 "
+echo "💬  Telegram: https://t.me/airdropalc"
+echo "=============================================="
+echo ""
 
-# Berikan izin eksekusi kepada semua user
-chmod +x "$0"
-chmod 755 "$0"
+# ===== Fungsi =====
+function install_dependencies() {
+    echo "🔄 Updating system & installing dependencies..."
+    sudo apt update && sudo apt install -y git curl wget unzip tar build-essential
+}
 
-# Minta input user
-read -p "Masukkan email Git kamu: " GIT_EMAIL
-read -p "Masukkan username Git kamu: " GIT_USERNAME
-read -p "Masukkan JWT Token Vlayer: " VLAYER_API_TOKEN
-read -p "Masukkan Private Key Wallet kamu: " EXAMPLES_TEST_PRIVATE_KEY
+function install_foundry() {
+    echo "⬇️ Installing Foundry..."
+    curl -L https://foundry.paradigm.xyz | bash
+    source /root/.bashrc
+    foundryup
+    forge --version
+}
 
-# Update dan install dependensi
-dpkg --configure -a
-apt update && apt install -y git curl wget unzip tar build-essential
+function install_vlayer() {
+    echo "⬇️ Installing Vlayer..."
+    curl -SL https://install.vlayer.xyz | bash
+    source /root/.bashrc
+    vlayerup
+    vlayer --version
+}
 
-# Install Foundry
-curl -L https://foundry.paradigm.xyz | bash && source ~/.bashrc && foundryup && forge --version
+function install_bun() {
+    echo "⬇️ Installing Bun..."
+    curl -fsSL https://bun.sh/install | bash
+    source /root/.bashrc
+}
 
-# Install Vlayer
-curl -SL https://install.vlayer.xyz | bash && source ~/.bashrc && vlayerup && vlayer --version
+function setup_project() {
+    read -p "📦 Masukkan nama project: " project_name
+    read -p "🔑 Masukkan VLAYER_API_TOKEN: " api_token
+    read -p "🔐 Masukkan EXAMPLES_TEST_PRIVATE_KEY: " private_key
 
-# Install Bun
-curl -fsSL https://bun.sh/install | bash && source ~/.bashrc && bun --version
+    if [ -d "$project_name" ]; then
+        echo "⚠️  Folder '$project_name' sudah ada!"
+        read -p "Apakah kamu ingin menghapus folder tersebut dan melanjutkan? (y/n): " confirm
+        if [[ "$confirm" == "y" ]]; then
+            rm -rf "$project_name"
+            echo "🗑️  Folder lama dihapus."
+        else
+            echo "❌ Dibatalkan."
+            exit 1
+        fi
+    fi
 
-# Konfigurasi Git
-git config --global user.email "$GIT_EMAIL"
-git config --global user.name "$GIT_USERNAME"
+    echo "🚀 Inisialisasi project $project_name ..."
+    vlayer init "$project_name" --template simple-web-proof
+    cd "$project_name"
+    forge build
 
-# Buat proyek baru
-vlayer init "$GIT_USERNAME" --template simple-web-proof
-cd "$GIT_USERNAME" || exit
-forge build
-cd vlayer || exit
+    cd vlayer
 
-# Buat file konfigurasi environment
-echo "VLAYER_API_TOKEN=$VLAYER_API_TOKEN" > .env.testnet.local
-echo "EXAMPLES_TEST_PRIVATE_KEY=$EXAMPLES_TEST_PRIVATE_KEY" >> .env.testnet.local
-echo "CHAIN_NAME=optimismSepolia" >> .env.testnet.local
-echo "JSON_RPC_URL=https://sepolia.optimism.io" >> .env.testnet.local
+    echo "✍️ Membuat file .env.testnet.local ..."
+    cat <<EOF > .env.testnet.local
+VLAYER_API_TOKEN=$api_token
+EXAMPLES_TEST_PRIVATE_KEY=$private_key
+CHAIN_NAME=optimismSepolia
+JSON_RPC_URL=https://sepolia.optimism.io
+EOF
 
-# Tampilkan isi file untuk verifikasi
-cat .env.testnet.local
+    echo "📦 Memastikan semua dependency terinstall..."
+    if [ ! -f package.json ]; then
+        echo "❌ package.json tidak ditemukan! Proses dihentikan."
+        exit 1
+    fi
 
-# Looping eksekusi transaksi di testnet setiap 5 detik
-while true; do
-    echo "Menjalankan transaksi di testnet..."
-    bun run prove:testnet
-    sleep 5
-done
+    if ! grep -q "@vlayer/sdk" package.json; then
+        echo "➕ Menambahkan @vlayer/sdk ..."
+        bun add @vlayer/sdk
+    fi
+
+    echo "📥 Menjalankan bun install ..."
+    bun install
+
+    echo "▶️ Menjalankan VLAYER_ENV=testnet bun run prove.ts setiap 5 detik (tekan CTRL+C untuk berhenti) ..."
+    while true; do
+        echo "\$ VLAYER_ENV=testnet bun run prove.ts"
+        if ! VLAYER_ENV=testnet bun run prove.ts; then
+            echo "❌ Gagal menjalankan prove.ts. Pastikan semua modul sudah terinstall!"
+        fi
+        echo "⏳ Menunggu 5 detik..."
+        sleep 5
+    done
+}
+
+# ===== MENU =====
+echo "🛠️  Pilih yang mau kamu lakukan:"
+echo "1) Install Semua (Dependencies, Foundry, Vlayer, Bun)"
+echo "2) Install Foundry saja"
+echo "3) Install Vlayer saja"
+echo "4) Install Bun saja"
+echo "5) Setup Project Vlayer"
+echo "6) Keluar"
+
+read -p "Masukkan pilihan [1-6]: " pilihan
+
+case $pilihan in
+    1)
+        install_dependencies
+        install_foundry
+        install_vlayer
+        install_bun
+        ;;
+    2)
+        install_dependencies
+        install_foundry
+        ;;
+    3)
+        install_dependencies
+        install_vlayer
+        ;;
+    4)
+        install_dependencies
+        install_bun
+        ;;
+    5)
+        setup_project
+        ;;
+    6)
+        echo "❌ Tidak ada aksi diambil."
+        exit 0
+        ;;
+    *)
+        echo "⚠️  Pilihan tidak valid."
+        exit 1
+        ;;
+esac
+
+echo "✅ Proses selesai!"
